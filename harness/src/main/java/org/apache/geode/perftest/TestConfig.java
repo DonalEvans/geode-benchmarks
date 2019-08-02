@@ -86,7 +86,6 @@ public class TestConfig implements Serializable {
     workload.add(new TestStep(new YardstickTask(benchmark, workloadConfig), roles));
   }
 
-
   /**
    * Set the duration of the workload phase. This is the amount of time that
    * the workload tasks are actually measured. The total runtime of the test
@@ -96,6 +95,18 @@ public class TestConfig implements Serializable {
    */
   public void durationSeconds(long durationSeconds) {
     workloadConfig.durationSeconds(durationSeconds);
+  }
+
+  /**
+   * Set the total number of operations to execute in the post-warmup workload phase. This value
+   * takes precedence over {@Link #durationSeconds(long)} but is applied after the warmup period set
+   * by {@link #warmupSeconds(long)}. Default value is 0 (interpreted as infinite), which makes
+   * {@Link #durationSeconds(long)} the limiting factor for benchmark duration.
+   *
+   * @param operationsCount The total number of operations to execute post-warmup phase
+   */
+  public void operationsCount(int operationsCount) {
+    workloadConfig.operationsCount(operationsCount);
   }
 
   /**
@@ -118,6 +129,10 @@ public class TestConfig implements Serializable {
 
   public long getDurationSeconds() {
     return workloadConfig.getDurationSeconds();
+  }
+
+  public int getOperationsCount() {
+    return workloadConfig.getOperationsCount();
   }
 
   public long getWarmupSeconds() {

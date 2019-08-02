@@ -71,6 +71,11 @@ public class YardstickTask implements Task {
       }
 
       @Override
+      public int operationsCount() {
+        return workloadConfig.getOperationsCount();
+      }
+
+      @Override
       public int threads() {
         return workloadConfig.getThreads();
       }

@@ -32,7 +32,7 @@ import org.apache.geode.perftest.TestConfig;
 import org.apache.geode.perftest.TestRunners;
 
 /**
- * Benchmark of puts on a replicated region.
+ * Benchmark of new PdxType creation from JSON documents
  */
 public class CreatePdxFromJSONBenchmark implements PerformanceTest {
 
@@ -53,11 +53,15 @@ public class CreatePdxFromJSONBenchmark implements PerformanceTest {
   public TestConfig configure() {
     TestConfig config = GeodeBenchmark.createConfig();
     Properties customProps = new Properties();
+    // The PdxType creation process generates a large amount of info-level log output which creates
+    // unwanted overhead, so the log level is set to "WARN" to avoid this
     customProps.setProperty(LOG_LEVEL, "WARN");
     config.props(SERVER, customProps);
     config.props(LOCATOR, customProps);
+    config.warmupSeconds(0);
+    config.operationsCount(batchSize);
     ClientServerTopology.configure(config);
-    config.workload(new CreatePdxFromJSONTask(batchSize), SERVER);
+    config.workload(new CreatePdxFromJSONTask(), SERVER);
     return config;
 
   }

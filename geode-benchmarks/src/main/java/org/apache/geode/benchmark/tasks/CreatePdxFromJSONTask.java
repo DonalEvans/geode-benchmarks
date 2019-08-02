@@ -27,28 +27,14 @@ import org.apache.geode.pdx.JSONFormatter;
 
 public class CreatePdxFromJSONTask extends BenchmarkDriverAdapter
     implements Serializable {
-
-  // The number of PdxTypes to create per test execution.
-  private int batchSize;
-
   private int count = 0;
 
   private String member = null;
 
-  public CreatePdxFromJSONTask(int batchSize) {
-    this.batchSize = batchSize;
-  }
+  public CreatePdxFromJSONTask() {}
 
   @Override
   public void setUp(BenchmarkConfiguration cfg) throws Exception {
-    // The test is by operationCounts, not by duration
-    // We are creating new pdxTypes, no need to warm up
-    // The performance is impacted on how many total pdxType when creating a
-    // new one. Each test starts from creating 10K new pdxType.
-    // Creating an existing pdxType will not impact the performance.
-    cfg.operationsCount(batchSize);
-    cfg.warmup(0);
-    cfg.duration(0);
     super.setUp(cfg);
     if (member == null) {
       member = CacheFactory.getAnyInstance().getDistributedSystem()
@@ -58,9 +44,12 @@ public class CreatePdxFromJSONTask extends BenchmarkDriverAdapter
 
   @Override
   public boolean test(Map<Object, Object> ctx) throws Exception {
+    // There is only a performance impact when a new PdxType is created and registered (as opposed
+    // to generating an already-registered PdxType), so JSON documents with unique field names are
+    // used to ensure that every PdxType created by the fromJSON() method is distinct.
     String field =
         "\"" + member + "-" + Thread.currentThread().getName() + "-" + count +
-            "\": " + count;
+            "\": 0";
     String jsonString = "{" + field + "}";
     JSONFormatter.fromJSON(jsonString);
     count++;

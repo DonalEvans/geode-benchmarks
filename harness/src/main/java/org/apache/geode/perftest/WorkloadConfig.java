@@ -33,6 +33,7 @@ public class WorkloadConfig implements Serializable {
   long durationSeconds = 1;
   long warmupSeconds = 0;
   int threads = Runtime.getRuntime().availableProcessors() * 2;
+  private int operationsCount = 0;
 
   public WorkloadConfig() {}
 
@@ -42,6 +43,10 @@ public class WorkloadConfig implements Serializable {
 
   public void warmupSeconds(long warmupSeconds) {
     this.warmupSeconds = warmupSeconds;
+  }
+
+  public void operationsCount(int operationsCount) {
+    this.operationsCount = operationsCount;
   }
 
   public void threads(int threads) {
@@ -54,6 +59,10 @@ public class WorkloadConfig implements Serializable {
 
   public long getWarmupSeconds() {
     return warmupSeconds;
+  }
+
+  public int getOperationsCount() {
+    return operationsCount;
   }
 
   public int getThreads() {

@@ -41,6 +41,7 @@ public class CreatePdxFromJSONBenchmarkTest {
   public void benchmarkRunsSuccessfully()
       throws Exception {
     CreatePdxFromJSONBenchmark test = new CreatePdxFromJSONBenchmark();
+    test.setBatchSize(100);
     TestRunners.minimalRunner(folder)
         .runTest(test);
   }
