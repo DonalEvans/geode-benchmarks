@@ -17,6 +17,7 @@
 
 package org.apache.geode.benchmark.tests;
 
+import static org.apache.geode.benchmark.topology.ClientServerTopology.Roles.CLIENT;
 import static org.apache.geode.benchmark.topology.ClientServerTopology.Roles.LOCATOR;
 import static org.apache.geode.benchmark.topology.ClientServerTopology.Roles.SERVER;
 import static org.apache.geode.distributed.ConfigurationProperties.LOG_LEVEL;
@@ -25,20 +26,16 @@ import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
 
-import org.apache.geode.benchmark.tasks.CreatePdxFromJSONTask;
 import org.apache.geode.benchmark.topology.ClientServerTopology;
 import org.apache.geode.perftest.PerformanceTest;
 import org.apache.geode.perftest.TestConfig;
 import org.apache.geode.perftest.TestRunners;
 
-/**
- * Benchmark of new PdxType creation from JSON documents
- */
-public class CreatePdxFromJSONBenchmark implements PerformanceTest {
+public class AbstractCreatePdxFromJSONBenchmark implements PerformanceTest {
 
   private int batchSize = 10000;
 
-  public CreatePdxFromJSONBenchmark() {}
+  public AbstractCreatePdxFromJSONBenchmark() {}
 
   public void setBatchSize(int batchSize) {
     this.batchSize = batchSize;
@@ -57,12 +54,11 @@ public class CreatePdxFromJSONBenchmark implements PerformanceTest {
     // unwanted overhead, so the log level is set to "WARN" to avoid this
     customProps.setProperty(LOG_LEVEL, "WARN");
     config.props(SERVER, customProps);
+    config.props(CLIENT, customProps);
     config.props(LOCATOR, customProps);
     config.warmupSeconds(0);
     config.operationsCount(batchSize);
     ClientServerTopology.configure(config);
-    config.workload(new CreatePdxFromJSONTask(), SERVER);
     return config;
-
   }
 }

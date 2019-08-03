@@ -17,32 +17,30 @@
 
 package org.apache.geode.benchmark.tests;
 
-import java.io.File;
-import java.nio.file.Path;
+import static org.apache.geode.benchmark.topology.ClientServerTopology.Roles.SERVER;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junitpioneer.jupiter.TempDirectory;
 
+import org.apache.geode.benchmark.tasks.CreatePdxFromJSONTask;
+import org.apache.geode.perftest.TestConfig;
 import org.apache.geode.perftest.TestRunners;
 
-@ExtendWith(TempDirectory.class)
-public class CreatePdxFromJSONBenchmarkTest {
+/**
+ * Benchmark of new PdxType creation from JSON documents on a server
+ */
+public class CreatePdxFromJSONOnServerBenchmark extends AbstractCreatePdxFromJSONBenchmark {
 
-  private File folder;
-
-  @BeforeEach
-  void createTemporaryFolder(@TempDirectory.TempDir Path tempFolder) {
-    folder = tempFolder.toFile();
-  }
+  public CreatePdxFromJSONOnServerBenchmark() {}
 
   @Test
-  public void benchmarkRunsSuccessfully()
-      throws Exception {
-    CreatePdxFromJSONBenchmark test = new CreatePdxFromJSONBenchmark();
-    test.setBatchSize(100);
-    TestRunners.minimalRunner(folder)
-        .runTest(test);
+  public void run() throws Exception {
+    TestRunners.defaultRunner().runTest(this);
+  }
+
+  @Override
+  public TestConfig configure() {
+    TestConfig config = super.configure();
+    config.workload(new CreatePdxFromJSONTask(), SERVER);
+    return config;
   }
 }
